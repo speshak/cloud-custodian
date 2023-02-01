@@ -2040,7 +2040,7 @@ class DbOptionGroups(ValueFilter):
                 for option in option_list:
                     if option['Options']:
                         for p in option['Options']:
-                            pgcache[pg].update({'OptionName': p['OptionName']})
+                            pgcache[pg].update(p)
                 cache.save(cache_key, pgcache[pg])
 
         return pgcache
