@@ -2012,6 +2012,20 @@ class DbOptionGroups(ValueFilter):
                 key: OptionName
                 value: NATIVE_NETWORK_ENCRYPTION
                 op: eq
+
+    :example:
+
+    .. code-block:: yaml
+
+        policies:
+          - name: rds-oracle-encryption-in-transit
+            resource: aws.rds
+            filters:
+              - Engine: oracle-ee
+              - type: db-option-groups
+                key: OptionSettings[?Name == 'SQLNET.ENCRYPTION_SERVER'].Value
+                value:
+                  - REQUIRED
     """
 
     schema = type_schema('db-option-groups', rinherit=ValueFilter.schema)
