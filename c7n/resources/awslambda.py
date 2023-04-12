@@ -279,15 +279,18 @@ class HasSpecificManagedPolicy(SpecificIamRoleManagedPolicy):
         client = utils.local_session(self.manager.session_factory).client('iam')
 
         results = []
-        for r in resources:
-            role = {
-                'Arn': r['Role'],
-                'RoleName': r['Role'].split('/')[-1],
+        roles = {
+            r['Role']: {
+                'RoleName': r['Role'].split('/')[-1]
             }
+            for r in resources
+        }
 
+        for role in roles.values():
             self.get_managed_policies(client, [role])
-
-            matched_keys = [k for k in role[self.annotation_key] if self.match(k)]
+        for r in resources:
+            role_arn = r['Role']
+            matched_keys = [k for k in roles[role_arn][self.annotation_key] if self.match(k)]
             self.merge_annotation(role, self.matched_annotation_key, matched_keys)
             if matched_keys:
                 results.append(r)
@@ -298,9 +301,9 @@ class HasSpecificManagedPolicy(SpecificIamRoleManagedPolicy):
 class LambdaEnableXrayTracing(Action):
     """
     This action allows for enable Xray tracing to Active
- 
+
     :example:
-    
+
     .. code-block:: yaml
 
       actions:
